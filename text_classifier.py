@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[17]:
+# In[6]:
 
 
 import numpy as np
@@ -66,8 +66,7 @@ def naive_bayes_predict(review, logprior, loglikelihood):
     prediction = 0
 
     # add the logprior
-    total_prob = total_prob + logprior
-    
+    total_prob = total_prob + logprior   
 
     for word in word_l:
 
@@ -88,6 +87,7 @@ def naive_bayes_predict(review, logprior, loglikelihood):
 def main():
     clf_filename = 'naive_bayes_model_parameters.pkl'
     nb_clf = pickle.load(open(clf_filename, 'rb'))
+    loglikelihood = nb_clf[1]
     my_review = "" 
     keep_going = True
     while keep_going:
@@ -95,10 +95,22 @@ def main():
         if my_review == "X":
             keep_going = False
             quit()
-        if(keep_going): 
+        if(keep_going):            
+            output = ''
             probability , prediction = naive_bayes_predict(my_review, nb_clf[0], nb_clf[1]) 
-            print('The predicted output is', prediction )
+            if(prediction == 1):
+                output = 'negative'
+            else:
+                output = 'positive'
+            print('The predicted output is', prediction , output )
             print('The probability for the input is', probability)
+            input_tokens = my_review.split()
+            for token in input_tokens:
+                
+                if token in loglikelihood:
+                    print( token, loglikelihood[token], sep = '- ')
+                else:
+                    print(token, 0, sep = '- ')
   
 # __name__
 if __name__=="__main__":
